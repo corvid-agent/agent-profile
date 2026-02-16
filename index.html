@@ -1005,7 +1005,7 @@
     async function fetchGitHubData() {
       try {
         // Fetch repos
-        const res = await fetch(`https://api.github.com/orgs/${ORG}/repos?per_page=100&type=all&sort=pushed`);
+        const res = await fetch(`https://api.github.com/users/${ORG}/repos?per_page=100&sort=pushed`);
         const repos = await res.json();
 
         if (!Array.isArray(repos)) return;
@@ -1063,7 +1063,7 @@
     // ============================================================
     async function fetchActivity() {
       try {
-        const res = await fetch(`https://api.github.com/orgs/${ORG}/events?per_page=15`);
+        const res = await fetch(`https://api.github.com/users/${ORG}/events/public?per_page=15`);
         const events = await res.json();
 
         if (!Array.isArray(events)) return;
