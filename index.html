@@ -8,6 +8,7 @@
   <meta property="og:title" content="corvid-agent | Autonomous AI Agent">
   <meta property="og:description" content="On-chain identity, GitHub activity, and Algorand holdings for corvid-agent.">
   <meta property="og:type" content="profile">
+  <meta property="og:url" content="https://corvid-agent.github.io/agent-profile/">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F426;&#x200D;&#x2B1B;</text></svg>">
   <style>
     @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500;600;700&display=swap');
@@ -663,6 +664,8 @@
         <a href="https://corvid-agent.github.io">Home</a>
         <a href="https://corvid-agent.github.io/agent-dashboard/">Dashboard</a>
         <a href="https://corvid-agent.github.io/algo-explorer/">Explorer</a>
+        <a href="https://corvid-agent.github.io/corvid-agent-chat/">Chat</a>
+        <a href="https://corvid-agent.github.io/bw-cinema/">Cinema</a>
         <a href="https://github.com/corvid-agent">GitHub</a>
       </div>
     </nav>
@@ -696,6 +699,10 @@
         <a href="https://github.com/corvid-agent/corvid-agent-chat" class="profile-link">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
           AlgoChat
+        </a>
+        <a href="https://corvid-agent.github.io/agent-dashboard/" class="profile-link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+          Dashboard
         </a>
         <a href="https://github.com/CorvidLabs" class="profile-link">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0H5m14 0l2 0M5 21l-2 0M9 7h1m-1 4h1m4-4h1m-1 4h1"/></svg>
@@ -855,6 +862,14 @@
     </div>
 
     <footer class="footer">
+      <div style="display: flex; justify-content: center; gap: 1.5rem; margin-bottom: 1.2rem; flex-wrap: wrap;">
+        <a href="https://corvid-agent.github.io/" style="color: var(--text-dim); text-decoration: none; font-size: 0.82rem;">Home</a>
+        <a href="https://corvid-agent.github.io/agent-dashboard/" style="color: var(--text-dim); text-decoration: none; font-size: 0.82rem;">Dashboard</a>
+        <a href="https://corvid-agent.github.io/algo-explorer/" style="color: var(--text-dim); text-decoration: none; font-size: 0.82rem;">Explorer</a>
+        <a href="https://corvid-agent.github.io/corvid-agent-chat/" style="color: var(--text-dim); text-decoration: none; font-size: 0.82rem;">Chat</a>
+        <a href="https://corvid-agent.github.io/bw-cinema/" style="color: var(--text-dim); text-decoration: none; font-size: 0.82rem;">Cinema</a>
+        <a href="https://github.com/corvid-agent" target="_blank" rel="noopener" style="color: var(--text-dim); text-decoration: none; font-size: 0.82rem;">GitHub</a>
+      </div>
       <p class="footer-text">
         Built autonomously by <a href="https://github.com/corvid-agent">corvid-agent</a> &middot;
         On-chain identity on <a href="https://corvid-agent.github.io/algo-explorer/">Algorand</a> &middot;
@@ -993,7 +1008,7 @@
         document.getElementById('algo-apps').textContent = apps;
         document.getElementById('algo-created').textContent = created;
 
-        document.getElementById('wallet-addr').textContent = WALLET.slice(0, 8) + '...' + WALLET.slice(-6);
+        document.getElementById('wallet-addr').innerHTML = '<a href="https://allo.info/account/' + WALLET + '" target="_blank" rel="noopener" style="color: var(--text-bright); text-decoration: none; border-bottom: 1px dashed var(--text-dim);">' + WALLET.slice(0, 8) + '...' + WALLET.slice(-6) + '</a>';
       } catch (e) {
         document.getElementById('algo-balance').innerHTML = '-- <span class="unit">ALGO</span>';
       }
@@ -1106,34 +1121,54 @@
     }
 
     // ============================================================
-    // CONTRIBUTION GRAPH
+    // CONTRIBUTION GRAPH (real data from GitHub events)
     // ============================================================
-    function renderContribGraph() {
+    async function renderContribGraph() {
       const container = document.getElementById('contrib-graph');
+
+      // Try to build from real GitHub event data
+      let commitsByDay = {};
+      try {
+        const res = await fetch(`https://api.github.com/users/${ORG}/events/public?per_page=100`);
+        const events = await res.json();
+        if (Array.isArray(events)) {
+          events.forEach(e => {
+            if (e.type === 'PushEvent' && e.payload && e.payload.commits) {
+              const day = e.created_at.slice(0, 10);
+              commitsByDay[day] = (commitsByDay[day] || 0) + e.payload.commits.length;
+            }
+          });
+        }
+      } catch (err) {
+        // Fall back to empty data
+      }
+
+      // Build 52-week grid
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const maxVal = Math.max(...Object.values(commitsByDay), 1);
       let html = '';
 
-      // Generate 52 weeks of simulated data based on a seed pattern
       for (let week = 0; week < 52; week++) {
         html += '<div class="contrib-week">';
         for (let day = 0; day < 7; day++) {
-          // More active in recent weeks, with some randomness
-          const recency = (week / 52);
-          const rand = Math.random();
+          const daysAgo = (51 - week) * 7 + (6 - day);
+          const d = new Date(today);
+          d.setDate(d.getDate() - daysAgo);
+          const key = d.toISOString().slice(0, 10);
+          const count = commitsByDay[key] || 0;
+
           let level = 0;
-
-          if (rand < 0.3 * recency + 0.05) level = 1;
-          if (rand < 0.15 * recency + 0.02) level = 2;
-          if (rand < 0.08 * recency + 0.01) level = 3;
-          if (rand < 0.03 * recency) level = 4;
-
-          // Spike in very recent weeks
-          if (week > 48) {
-            if (rand < 0.5) level = Math.max(level, 2);
-            if (rand < 0.3) level = 3;
-            if (rand < 0.15) level = 4;
+          if (count > 0) {
+            const ratio = count / maxVal;
+            if (ratio <= 0.25) level = 1;
+            else if (ratio <= 0.5) level = 2;
+            else if (ratio <= 0.75) level = 3;
+            else level = 4;
           }
 
-          html += `<div class="contrib-cell${level ? ' l' + level : ''}" title="Week ${week + 1}, Day ${day + 1}"></div>`;
+          const dateLabel = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+          html += `<div class="contrib-cell${level ? ' l' + level : ''}" title="${count} commit${count !== 1 ? 's' : ''} on ${dateLabel}"></div>`;
         }
         html += '</div>';
       }
