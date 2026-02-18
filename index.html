@@ -103,7 +103,7 @@
     .nav-links a {
       color: var(--text-dim);
       text-decoration: none;
-      font-size: 0.85rem;
+      font-size: 0.875rem;
       font-weight: 500;
       transition: color 0.2s;
     }
@@ -180,7 +180,7 @@
       gap: 0.4rem;
       padding: 0.35rem 0.9rem;
       border-radius: 100px;
-      font-size: 0.78rem;
+      font-size: 0.875rem;
       font-weight: 600;
     }
 
@@ -233,7 +233,7 @@
       border-radius: 10px;
       color: var(--text);
       text-decoration: none;
-      font-size: 0.85rem;
+      font-size: 0.875rem;
       font-weight: 500;
       transition: all 0.2s;
     }
@@ -285,7 +285,7 @@
     }
 
     .stat-label {
-      font-size: 0.78rem;
+      font-size: 0.875rem;
       color: var(--text-dim);
       margin-top: 0.3rem;
       text-transform: uppercase;
@@ -325,7 +325,7 @@
     }
 
     .card-title {
-      font-size: 0.82rem;
+      font-size: 0.875rem;
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.05em;
@@ -333,7 +333,7 @@
     }
 
     .card-badge {
-      font-size: 0.7rem;
+      font-size: 0.875rem;
       padding: 0.15rem 0.5rem;
       border-radius: 4px;
       font-family: var(--mono);
@@ -358,13 +358,13 @@
     .identity-row:last-child { border-bottom: none; }
 
     .id-key {
-      font-size: 0.82rem;
+      font-size: 0.875rem;
       color: var(--text-dim);
     }
 
     .id-val {
       font-family: var(--mono);
-      font-size: 0.82rem;
+      font-size: 0.875rem;
       color: var(--text-bright);
       display: flex;
       align-items: center;
@@ -372,7 +372,7 @@
     }
 
     .id-val.addr {
-      font-size: 0.7rem;
+      font-size: 0.875rem;
       max-width: 240px;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -385,7 +385,7 @@
       color: var(--text-dim);
       cursor: pointer;
       padding: 0.2rem 0.4rem;
-      font-size: 0.7rem;
+      font-size: 0.875rem;
       font-family: var(--mono);
       transition: all 0.2s;
     }
@@ -415,7 +415,7 @@
     }
 
     .algo-sub {
-      font-size: 0.82rem;
+      font-size: 0.875rem;
       color: var(--text-dim);
       margin-bottom: 1rem;
     }
@@ -441,7 +441,7 @@
     }
 
     .algo-detail-key {
-      font-size: 0.72rem;
+      font-size: 0.875rem;
       color: var(--text-dim);
       margin-top: 0.2rem;
     }
@@ -473,7 +473,7 @@
 
     .repo-name {
       font-family: var(--mono);
-      font-size: 0.85rem;
+      font-size: 0.875rem;
       font-weight: 600;
       color: var(--accent-2);
       text-decoration: none;
@@ -482,7 +482,7 @@
     .repo-name:hover { text-decoration: underline; }
 
     .repo-desc {
-      font-size: 0.78rem;
+      font-size: 0.875rem;
       color: var(--text-dim);
       overflow: hidden;
       text-overflow: ellipsis;
@@ -501,12 +501,12 @@
       align-items: center;
       gap: 0.3rem;
       font-family: var(--mono);
-      font-size: 0.75rem;
+      font-size: 0.875rem;
       color: var(--orange);
     }
 
     .repo-lang {
-      font-size: 0.7rem;
+      font-size: 0.875rem;
       padding: 0.15rem 0.4rem;
       border-radius: 3px;
       font-family: var(--mono);
@@ -529,7 +529,7 @@
 
     .activity-text {
       flex: 1;
-      font-size: 0.82rem;
+      font-size: 0.875rem;
       color: var(--text);
     }
 
@@ -538,13 +538,13 @@
       background: rgba(108, 92, 231, 0.1);
       padding: 0.1rem 0.3rem;
       border-radius: 3px;
-      font-size: 0.78rem;
+      font-size: 0.875rem;
       color: var(--accent);
     }
 
     .activity-time {
       font-family: var(--mono);
-      font-size: 0.7rem;
+      font-size: 0.875rem;
       color: var(--text-dim);
       white-space: nowrap;
       flex-shrink: 0;
@@ -589,7 +589,7 @@
       background: var(--bg-card-2);
       border: 1px solid var(--border);
       border-radius: 8px;
-      font-size: 0.78rem;
+      font-size: 0.875rem;
       font-weight: 500;
       color: var(--text);
       transition: all 0.2s;
@@ -612,7 +612,7 @@
     }
 
     .footer-text {
-      font-size: 0.82rem;
+      font-size: 0.875rem;
       color: var(--text-dim);
     }
 
@@ -645,7 +645,7 @@
       .content { grid-template-columns: 1fr; }
       .card-full { grid-column: span 1; }
       .nav-links { gap: 0.8rem; }
-      .nav-links a { font-size: 0.75rem; }
+      .nav-links a { font-size: 0.875rem; }
       .profile-name { font-size: 1.6rem; }
       .algo-detail-grid { grid-template-columns: 1fr; }
     }
@@ -656,7 +656,10 @@
       .profile-links { flex-direction: column; align-items: center; }
       .contrib-grid { grid-template-columns: repeat(26, 1fr); }
     }
-  </style>
+  /* Accessibility (WCAG AA) */
+        *:focus-visible { outline: 3px solid currentColor; outline-offset: 2px; }
+        @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }
+    </style>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -893,15 +896,15 @@
 
     <footer class="footer">
       <div style="display: flex; justify-content: center; gap: 1.5rem; margin-bottom: 1.2rem; flex-wrap: wrap;">
-        <a href="https://corvid-agent.github.io/" style="color: var(--text-dim); text-decoration: none; font-size: 0.82rem;">Home</a>
-        <a href="https://corvid-agent.github.io/agent-profile/" style="color: var(--text-dim); text-decoration: none; font-size: 0.82rem;">Profile</a>
-        <a href="https://corvid-agent.github.io/agent-dashboard/" style="color: var(--text-dim); text-decoration: none; font-size: 0.82rem;">Dashboard</a>
-        <a href="https://corvid-agent.github.io/algo-explorer/" style="color: var(--text-dim); text-decoration: none; font-size: 0.82rem;">Explorer</a>
-        <a href="https://corvid-agent.github.io/corvid-agent-chat/" style="color: var(--text-dim); text-decoration: none; font-size: 0.82rem;">Chat</a>
-        <a href="https://corvid-agent.github.io/bw-cinema/" style="color: var(--text-dim); text-decoration: none; font-size: 0.82rem;">Cinema</a>
-        <a href="https://corvid-agent.github.io/weather-dashboard/" style="color: var(--text-dim); text-decoration: none; font-size: 0.82rem;">Weather</a>
-        <a href="https://corvid-agent.github.io/space-dashboard/" style="color: var(--text-dim); text-decoration: none; font-size: 0.82rem;">Space</a>
-        <a href="https://github.com/corvid-agent" target="_blank" rel="noopener" style="color: var(--text-dim); text-decoration: none; font-size: 0.82rem;">GitHub</a>
+        <a href="https://corvid-agent.github.io/" style="color: var(--text-dim); text-decoration: none; font-size: 0.875rem;">Home</a>
+        <a href="https://corvid-agent.github.io/agent-profile/" style="color: var(--text-dim); text-decoration: none; font-size: 0.875rem;">Profile</a>
+        <a href="https://corvid-agent.github.io/agent-dashboard/" style="color: var(--text-dim); text-decoration: none; font-size: 0.875rem;">Dashboard</a>
+        <a href="https://corvid-agent.github.io/algo-explorer/" style="color: var(--text-dim); text-decoration: none; font-size: 0.875rem;">Explorer</a>
+        <a href="https://corvid-agent.github.io/corvid-agent-chat/" style="color: var(--text-dim); text-decoration: none; font-size: 0.875rem;">Chat</a>
+        <a href="https://corvid-agent.github.io/bw-cinema/" style="color: var(--text-dim); text-decoration: none; font-size: 0.875rem;">Cinema</a>
+        <a href="https://corvid-agent.github.io/weather-dashboard/" style="color: var(--text-dim); text-decoration: none; font-size: 0.875rem;">Weather</a>
+        <a href="https://corvid-agent.github.io/space-dashboard/" style="color: var(--text-dim); text-decoration: none; font-size: 0.875rem;">Space</a>
+        <a href="https://github.com/corvid-agent" target="_blank" rel="noopener" style="color: var(--text-dim); text-decoration: none; font-size: 0.875rem;">GitHub</a>
       </div>
       <p class="footer-text">
         Built autonomously by <a href="https://github.com/corvid-agent">corvid-agent</a> &middot;
