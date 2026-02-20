@@ -525,6 +525,66 @@
 
     .activity-item:last-child { border-bottom: none; }
 
+    /* Transaction items */
+    .txn-item {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      padding: 0.6rem 0;
+      border-bottom: 1px solid rgba(26, 27, 38, 0.4);
+    }
+    .txn-item:last-child { border-bottom: none; }
+    .txn-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      flex-shrink: 0;
+    }
+    .txn-icon.send { background: rgba(239, 68, 68, 0.1); }
+    .txn-icon.recv { background: rgba(16, 185, 129, 0.1); }
+    .txn-icon.appcall { background: rgba(108, 92, 231, 0.1); }
+    .txn-icon.other { background: rgba(90, 95, 114, 0.1); }
+    .txn-info { flex: 1; min-width: 0; }
+    .txn-type {
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-bright);
+    }
+    .txn-addr {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .txn-right { text-align: right; flex-shrink: 0; }
+    .txn-amount {
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+    .txn-amount.positive { color: var(--green); }
+    .txn-amount.negative { color: var(--red); }
+    .txn-amount.neutral { color: var(--text-dim); }
+    .txn-time {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      color: var(--text-dim);
+    }
+    .txn-link {
+      color: var(--accent-2);
+      text-decoration: none;
+      font-size: 0.7rem;
+      font-family: var(--mono);
+    }
+    .txn-link:hover { text-decoration: underline; }
+
     .activity-icon { font-size: 0.9rem; flex-shrink: 0; padding-top: 0.1rem; }
 
     .activity-text {
@@ -851,6 +911,17 @@
         </div>
         <div class="card-body">
           <div class="contrib-grid" id="contrib-graph"></div>
+        </div>
+      </div>
+
+      <!-- Algorand Transactions -->
+      <div class="card card-full">
+        <div class="card-header">
+          <span class="card-title">Recent Transactions</span>
+          <span class="card-badge teal">algorand</span>
+        </div>
+        <div class="card-body" id="txn-list" style="max-height: 450px; overflow-y: auto;">
+          <div style="text-align:center; padding: 2rem; color: var(--text-dim);">Loading transactions...</div>
         </div>
       </div>
 
@@ -1213,6 +1284,77 @@
     }
 
     // ============================================================
+    // FETCH ALGORAND TRANSACTIONS
+    // ============================================================
+    async function fetchTransactions() {
+      try {
+        const INDEXER = 'https://mainnet-idx.4160.nodely.dev';
+        const res = await fetch(`${INDEXER}/v2/accounts/${WALLET}/transactions?limit=20`);
+        const data = await res.json();
+
+        if (!data.transactions || !Array.isArray(data.transactions)) return;
+
+        const container = document.getElementById('txn-list');
+        container.innerHTML = data.transactions.map(txn => {
+          const isSend = txn.sender === WALLET;
+          const amount = txn['payment-transaction'] ? txn['payment-transaction'].amount : 0;
+          const isAppCall = !!txn['application-transaction'];
+          const receiver = txn['payment-transaction'] ? txn['payment-transaction'].receiver : '';
+          const peer = isSend ? receiver : txn.sender;
+
+          let typeLabel, iconClass, icon, amountClass, amountText;
+
+          if (isAppCall) {
+            typeLabel = 'App Call';
+            iconClass = 'appcall';
+            icon = '&#x2699;&#xFE0F;';
+            amountClass = 'neutral';
+            amountText = 'app';
+          } else if (amount === 0) {
+            typeLabel = isSend ? 'Sent' : 'Received';
+            iconClass = 'other';
+            icon = '&#x1F4CB;';
+            amountClass = 'neutral';
+            amountText = '0 ALGO';
+          } else if (isSend) {
+            typeLabel = 'Sent';
+            iconClass = 'send';
+            icon = '&#x2B06;&#xFE0F;';
+            amountClass = 'negative';
+            amountText = '-' + microToAlgo(amount) + ' ALGO';
+          } else {
+            typeLabel = 'Received';
+            iconClass = 'recv';
+            icon = '&#x2B07;&#xFE0F;';
+            amountClass = 'positive';
+            amountText = '+' + microToAlgo(amount) + ' ALGO';
+          }
+
+          const ts = txn['round-time'] ? new Date(txn['round-time'] * 1000) : null;
+          const timeStr = ts ? timeAgo(ts.toISOString()) : '';
+          const txId = txn.id || '';
+          const peerShort = peer ? peer.slice(0, 6) + '...' + peer.slice(-4) : '';
+
+          return '<div class="txn-item">' +
+            '<div class="txn-icon ' + iconClass + '">' + icon + '</div>' +
+            '<div class="txn-info">' +
+              '<div class="txn-type">' + typeLabel + '</div>' +
+              '<div class="txn-addr">' + peerShort + '</div>' +
+            '</div>' +
+            '<div class="txn-right">' +
+              '<div class="txn-amount ' + amountClass + '">' + amountText + '</div>' +
+              '<div class="txn-time">' + timeStr + '</div>' +
+              (txId ? '<a class="txn-link" href="https://corvid-agent.github.io/algo-explorer/?tx=' + txId + '" target="_blank" rel="noopener">view &#x203A;</a>' : '') +
+            '</div>' +
+          '</div>';
+        }).join('');
+
+      } catch (e) {
+        document.getElementById('txn-list').innerHTML = '<div style="text-align:center; padding: 2rem; color: var(--text-dim);">Failed to load transactions</div>';
+      }
+    }
+
+    // ============================================================
     // COPY WALLET
     // ============================================================
     function copyWallet() {
@@ -1233,6 +1375,7 @@
     fetchAlgoData();
     fetchGitHubData();
     fetchActivity();
+    fetchTransactions();
     renderContribGraph();
 
     // Refresh periodically
