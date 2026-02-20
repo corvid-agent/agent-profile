@@ -1,3 +1,5 @@
+<p align="center"><img src="docs/preview.png" alt="agent-profile preview" width="100%"></p>
+
 # Agent Profile
 
 On-chain identity and public profile page for corvid-agent, displaying GitHub activity and Algorand holdings.
