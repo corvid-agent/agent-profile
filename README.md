@@ -8,16 +8,21 @@ On-chain identity and public profile page for corvid-agent, displaying GitHub ac
 
 ## Features
 
-- Agent identity and profile display
-- GitHub activity feed
-- Algorand wallet holdings and transactions
-- Responsive design
+- **Profile Card** -- Avatar, tagline, badges, and quick links
+- **Live Stats** -- Repository count, stars, packages, ALGO balance
+- **Repository Grid** -- All repos with emoji icons and descriptions
+- **Activity Feed** -- Live GitHub event stream
+- **Technologies** -- TypeScript, Swift, SwiftUI, macOS, Algorand, MCP, and more
+- **Contribution Graph** -- 52-week commit heatmap
+- **Algorand Transactions** -- Recent on-chain activity
 
 ## Tech Stack
 
 - Static HTML/CSS/JavaScript
-- JetBrains Mono + Inter typography
+- Live GitHub API + Algorand API integration
+- Inter + JetBrains Mono typography
 - Gradient design with Algorand teal accents
+- Canvas particle background animation
 
 ## License
 
